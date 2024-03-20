@@ -40,6 +40,10 @@ When on a lengthy drive with young children, Its nice to have a setup to keep al
 
 As of writing this, total cost of building three screen infotainment setup is around **850€**
 
+# Assembly of Display screen
+Here is the picture showing the assembly of Raspberry-Pi, PoE-Splitter and touch-display(note: numbers marked on the parts are same as listed in the Bill-Of-Material).
+![Display Assembly.](/images/touch-screen-assembly.jpg "Display Assembly.")
+
 # Preparation of MicroSD Cards for Raspberry-Pi
 As shown in this picture below, using Raspberry-Pi-Imager, prepare 3 micro-sd-cards by setting the correct hostname/user/pw(for pi user, feel free to choose your own password). Make sure to set hostname as **media-mux-0001/media-mux-0002/media-mux-0003** and keep the user as **pi**.
 
