@@ -62,3 +62,8 @@ Overwrite OEM firmware of pocket router with [this](https://github.com/hackboxgu
 5. After reboot, all 3 Raspi-Touch-Screens will automatically boot to kodi media player where you can browse your media files from Pocket-Router's DLNA server and play the content.
 6. The Raspi that is attached with **3Keyboard-usb-accessory** will become a master device and by pressing the KEY_1 will play the same media of the master(by seeking the exact time of media) on to remaining two displays in a synchronized fashion.
 7. You are free to operate all 3 Raspi-Touch-Screens and play separate medias so that every passanger can enjoy their own content by attaching an audio-headset to their respective screens.
+
+# Final Assembly
+![Final Assembly 1.](/images/assembled-setup-1.jpg "Final Assembly 1.")
+
+![Final Assembly 2.](/images/assembled-setup-2.jpg "Final Assembly 2.")
