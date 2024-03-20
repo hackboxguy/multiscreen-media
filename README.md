@@ -58,7 +58,7 @@ Overwrite OEM firmware of pocket router with [this](https://github.com/hackboxgu
 2. From your PC(or laptop) ssh into the first Raspberry pi using putty.exe or ssh ```ssh pi@media-mux-0001```
 3. As shown in this picture below, run the commands: ```git clone https://github.com/hackboxguy/media-mux.git``` and ```cd media-mux``` and ```sudo ./setup.sh -n 1``` and finally reboot using ```sudo reboot;exit```
 
-![SW Installation.](/images/software-installation.png "SW Installation.")
+![SW Installation.](/images/sw-installation.png "SW Installation.")
 
 4. Repeat the steps 2 and 3 by using next hostname(**media-mux-0002/media-mux-0003**) and using ```sudo ./setup.sh -n 2``` and ```sudo ./setup.sh -n 3```
 5. After reboot, all 3 Raspi-Touch-Screens will automatically boot to kodi media player where you can browse your media files from Pocket-Router's DLNA server and play the content.
