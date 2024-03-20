@@ -1,9 +1,7 @@
-# Warning this page is still Work-in-progress
-
 # DIY In-Car Infotainment setup using affordable COTS Hardware
 When on a lengthy drive with young children, Its nice to have a setup to keep all your passengers indulge in the same content on their personal screens while immersing themselves in the audio through the car's speaker system. This provides them with a cinematic experience on the move. Leveraging commercial off-the-shelf (COTS) hardware and open-source software, here is an attempt to build such a system.
 
-[![DIY In-Car-Infotainment](http://img.youtube.com/vi/1vdC4lBXq0s/0.jpg)](http://www.youtube.com/watch?v=1vdC4lBXq0s)
+[![DIY In-Car-Infotainment](http://img.youtube.com/vi/KWB2NDv0Wd8/0.jpg)](http://www.youtube.com/watch?v=KWB2NDv0Wd8)
 
 # Setup in the car
 ![Car Setup Diagram.](/images/setup-in-the-car.png "Car Setup Diagram.")
