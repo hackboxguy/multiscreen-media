@@ -41,3 +41,26 @@ When on a lengthy drive with young children, Its nice to have a setup to keep al
 | 18    | MicroSD Card                 | 3        | 10            | 30       | 16GB or higher                  | [Link](https://amzn.eu/d/e3RXCP2) |
 
 As of writing this, total cost of building three screen infotainment setup is around **850€**
+
+# Preparation of MicroSD Cards for Raspberry-Pi
+As shown in this picture below, using Raspberry-Pi-Imager, prepare 3 micro-sd-cards by setting the correct hostname/user/pw(for pi user, feel free to choose your own password). Make sure to set hostname as **media-mux-0001/media-mux-0002/media-mux-0003** and keep the user as **pi**.
+
+![SDCard Preparation.](/images/raspi-sdcard-preparation.png "SDCard Preparation.")
+
+# Preparation of GL-MT300N-V2 Pocket-Router
+Overwrite OEM firmware of pocket router with [this](https://github.com/hackboxguy/lfs-downloads/raw/main/gl-mt300nv2-dlnasrv/gl-mt300nv2-dlnasrv.bin) image. Exact details of preparing pocket router as DLNA/DHCP server are available here in my [blog](https://albert-david.blogspot.com/2024/03/transforming-your-gl-mt300n-v2-pocket.html)(Make sure your media files are copied on a ntfs formatted flash drive).
+
+# Final setup of Raspberry Pi's
+1. As shown in this picture below, connect your PC(or laptop) to the 5th ethernet port(Non-PoE) of the PoE switch and turn ON the +12Vdc to this setup. wait for about 1-2 minutes so that pocket-router and raspberry-pi's are done with booting(your laptop or pc will get the ip 192.168.20.x from the dhcp server of the pocket-router).
+
+![Installation Setup.](/images/installation-setup.png "Installation Setup.")
+
+2. From your PC(or laptop) ssh into the first Raspberry pi using putty.exe or ssh ```ssh pi@media-mux-0001```
+3. As shown in this picture below, run the commands: ```git clone https://github.com/hackboxguy/media-mux.git``` and ```cd media-mux``` and ```sudo ./setup.sh -n 1``` and finally reboot using ```sudo reboot;exit```
+
+![SW Installation.](/images/software-installation.png "SW Installation.")
+
+4. Repeat the steps 2 and 3 by using next hostname(**media-mux-0002/media-mux-0003**) and using ```sudo ./setup.sh -n 2``` and ```sudo ./setup.sh -n 3```
+5. After reboot, all 3 Raspi-Touch-Screens will automatically boot to kodi media player where you can browse your media files from Pocket-Router's DLNA server and play the content.
+6. The Raspi that is attached with **3Keyboard-usb-accessory** will become a master device and by pressing the KEY_1 will play the same media of the master(by seeking the exact time of media) on to remaining two displays in a synchronized fashion.
+7. You are free to operate all 3 Raspi-Touch-Screens and play separate medias so that every passanger can enjoy their own content by attaching an audio-headset to their respective screens.
