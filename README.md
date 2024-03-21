@@ -71,3 +71,10 @@ Overwrite OEM firmware of pocket router with [this](https://github.com/hackboxgu
 ![Final Assembly 1.](/images/assembled-setup-1.jpg "Final Assembly 1.")
 
 ![Final Assembly 2.](/images/assembled-setup-2.jpg "Final Assembly 2.")
+
+# Mounting in the car
+Depending on your car's seat headrest, there are numerous options available, particularly those designed for tablet mounting. Seek out the one that best fits your car and the size of your touchscreen display. While inexpensive holder clips (option-3) may be simple to hold the touch-display but they dont have a secure grip as other options.
+![Mount Options.](/images/display-mount-options.png "Mount Options.")
+
+# Explaination of media-playback synchronization between the displays
+setup.sh installs all the required sw components and media-mux-controller daemon is one of them. As shown [here](https://github.com/hackboxguy/media-mux/blob/master/media-mux-controller.c#L110C11-L110C71), upon detection of KEY_1 [media-mux-sync-kodi-players.sh](https://github.com/hackboxguy/media-mux/blob/master/media-mux-sync-kodi-players.sh) gets invoked as system() call. This script, using kodi-api, reads the current playing media and its location and sets the same file/location to remaining(two) displays. The main issue we see in the youtube-video that it takes multiple attemps to get the good level of sync and it is mainly due to [play-pause-api-call](https://github.com/hackboxguy/media-mux/blob/master/media-mux-sync-kodi-players.sh#L55) which gets called sequentially on all 3 displays - if any of you kodi experts know how to fix this(or have other suggestion), would be a nice contribution to this project :-)
