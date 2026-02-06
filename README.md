@@ -45,27 +45,63 @@ Here is the picture showing the assembly of Raspberry-Pi, PoE-Splitter and touch
 ![Display Assembly.](/images/touch-screen-assembly.jpg "Display Assembly.")
 
 # Preparation of MicroSD Cards for Raspberry-Pi
+
+There are two ways to prepare the SD cards:
+
+## Option 1: Pre-built Image (Recommended)
+
+The easiest way - download and flash the same image to all SD cards.
+
+**Download**: [media-mux-v1.0.0 Pi4 Image](https://github.com/hackboxguy/media-mux/releases/download/v1.0.0/2024-10-22-raspios-bookworm-arm64-lite-media-mux-v1-0.img.xz) (~1.2GB)
+
+1. Download the image file above
+2. Flash to each SD card using [balenaEtcher](https://etcher.balena.io/) or [Rufus](https://rufus.ie/)
+3. Insert SD cards into your Raspberry Pi 4's and boot
+
+**That's it!** Each Pi automatically:
+- Generates a unique hostname from its MAC address (e.g., `media-mux-a1b2c3`)
+- Discovers other media-mux devices on the network
+- Auto-negotiates master/slave roles (no manual configuration needed)
+
+With this option, you can skip the "Final setup of Raspberry Pi's" section below - just boot and go!
+
+---
+
+## Option 2: Manual Installation (using Raspberry Pi Imager)
+
+For custom setups or if you prefer to install on an existing Raspberry Pi OS.
+
 As shown in this picture below, using Raspberry-Pi-Imager, prepare 3 micro-sd-cards by setting the correct hostname/user/pw(for pi user, feel free to choose your own password). Make sure to set hostname as **media-mux-0001/media-mux-0002/media-mux-0003** and keep the user as **pi**.
 
 ![SDCard Preparation.](/images/raspi-sdcard-preparation.png "SDCard Preparation.")
 
+Then follow the "Final setup of Raspberry Pi's" section below to complete the installation.
+
+---
+
 # Preparation of GL-MT300N-V2 Pocket-Router
 Overwrite OEM firmware of pocket router with [this](https://github.com/hackboxguy/lfs-downloads/raw/main/gl-mt300nv2-dlnasrv/gl-mt300nv2-dlnasrv.bin) image. Exact details of preparing pocket router as DLNA/DHCP server are available here in my [blog](https://albert-david.blogspot.com/2024/03/transforming-your-gl-mt300n-v2-pocket.html)(Make sure your media files are copied on a ntfs formatted flash drive).
 
-# Final setup of Raspberry Pi's
+# Final setup of Raspberry Pi's (Option 2 only)
+
+**Note:** If you used the pre-built image (Option 1), skip this section - your Pi's are ready to use!
+
 1. As shown in this picture below, connect your PC(or laptop) to the 5th ethernet port(Non-PoE) of the PoE switch and turn ON the +12Vdc to this setup. wait for about 1-2 minutes so that pocket-router and raspberry-pi's are done with booting(your laptop or pc will get the ip 192.168.20.x from the dhcp server of the pocket-router).
 
 ![Installation Setup.](/images/installation-setup.png "Installation Setup.")
 
 2. From your PC(or laptop) ssh into the first Raspberry pi using putty.exe or ssh ```ssh pi@media-mux-0001```
-3. As shown in this picture below, run the commands: ```git clone https://github.com/hackboxguy/media-mux.git``` and ```cd media-mux``` and ```sudo ./setup.sh -n 1``` and finally reboot using ```sudo reboot;exit```
+3. As shown in this picture below, run the commands: ```git clone --recursive https://github.com/hackboxguy/media-mux.git``` and ```cd media-mux``` and ```sudo ./setup.sh -n 1``` and finally reboot using ```sudo reboot;exit```
 
 ![SW Installation.](/images/sw-installation.png "SW Installation.")
 
 4. Repeat the steps 2 and 3 by using next hostname(**media-mux-0002/media-mux-0003**) and using ```sudo ./setup.sh -n 2``` and ```sudo ./setup.sh -n 3```
 5. After reboot, all 3 Raspi-Touch-Screens will automatically boot to kodi media player where you can browse your media files from Pocket-Router's DLNA server and play the content.
-6. The Raspi that is attached with **3Keyboard-usb-accessory** will become a master device and by pressing the KEY_1 will play the same media of the master(by seeking the exact time of media) on to remaining two displays in a synchronized fashion.
-7. You are free to operate all 3 Raspi-Touch-Screens and play separate medias so that every passanger can enjoy their own content by attaching an audio-headset to their respective screens.
+
+# How to Trigger Sync
+
+6. The Raspi that is attached with the **3-Key USB keyboard** becomes the sync trigger device. Press **KEY_1** to synchronize all screens to play the same media at the same position.
+7. You are free to operate all 3 Raspi-Touch-Screens and play separate medias so that every passenger can enjoy their own content by attaching an audio-headset to their respective screens.
 
 # Final Assembly
 ![Final Assembly 1.](/images/assembled-setup-1.jpg "Final Assembly 1.")
@@ -76,5 +112,17 @@ Overwrite OEM firmware of pocket router with [this](https://github.com/hackboxgu
 Depending on your car's seat headrest, there are numerous options available, particularly those designed for tablet mounting. Seek out the one that best fits your car and the size of your touchscreen display. While inexpensive holder clips (option-3) may be simple to hold the touch-display but they dont have a secure grip as other options.
 ![Mount Options.](/images/display-mount-options.png "Mount Options.")
 
-# Explaination of media-playback synchronization between the displays
-setup.sh installs all the required sw components and media-mux-controller daemon is one of them. As shown [here](https://github.com/hackboxguy/media-mux/blob/master/media-mux-controller.c#L110C11-L110C71), upon detection of KEY_1 [media-mux-sync-kodi-players.sh](https://github.com/hackboxguy/media-mux/blob/master/media-mux-sync-kodi-players.sh) gets invoked as system() call. This script, using kodi-api, reads the current playing media and its location and sets the same file/location to remaining(two) displays. The main issue we see in the youtube-video that it takes multiple attemps to get the good level of sync and it is mainly due to [play-pause-api-call](https://github.com/hackboxguy/media-mux/blob/master/media-mux-sync-kodi-players.sh#L55) which gets called sequentially on all 3 displays - if any of you kodi experts know how to fix this(or have other suggestion), would be a nice contribution to this project :-)
+# Explanation of media-playback synchronization between the displays
+
+The `media-mux-controller` daemon listens for keyboard input. Upon detection of **KEY_1**, the [media-mux-sync-kodi-players.sh](https://github.com/hackboxguy/media-mux/blob/master/media-mux-sync-kodi-players.sh) script is invoked. This script:
+
+1. Reads the currently playing media and position from the master device
+2. Discovers all media-mux devices on the network via Avahi/mDNS
+3. Opens the same media file on all devices
+4. Uses [kodisync](https://github.com/hackboxguy/kodisync) to pause all players at the exact same frame
+5. Seeks all players to the master's position
+6. Resumes playback simultaneously
+
+**Sync accuracy:** The system achieves sub-200ms synchronization, typically with less than 10ms spread between devices. This is a significant improvement over the earlier version shown in the YouTube video, which required multiple sync attempts.
+
+For more technical details, see the [media-mux README](https://github.com/hackboxguy/media-mux#how-synchronization-works).
