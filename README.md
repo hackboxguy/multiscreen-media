@@ -63,7 +63,7 @@ The easiest way - download and flash the same image to all SD cards.
 - Discovers other media-mux devices on the network
 - Auto-negotiates master/slave roles (no manual configuration needed)
 
-With this option, you can skip the "Final setup of Raspberry Pi's" section below - just boot and go!
+With this option, you can skip the ["Final setup of Raspberry Pi's"](#final-setup-of-raspberry-pis-option-2-only) section below - just boot and go!
 
 ---
 
