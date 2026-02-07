@@ -126,3 +126,65 @@ The `media-mux-controller` daemon listens for keyboard input. Upon detection of 
 **Sync accuracy:** The system achieves sub-200ms synchronization, typically with less than 10ms spread between devices. This is a significant improvement over the earlier version shown in the YouTube video, which required multiple sync attempts.
 
 For more technical details, see the [media-mux README](https://github.com/hackboxguy/media-mux#how-synchronization-works).
+
+---
+
+# Self-Hosted Mode (No Pocket Router)
+
+An alternative deployment eliminates the GL-MT300N-V2 pocket router entirely. One Raspberry Pi automatically becomes the master (providing DHCP, DNS, NTP, and DLNA) when USB storage is attached.
+
+## Benefits
+
+- **Simpler hardware**: No pocket router or separate PoE splitter for router
+- **Same SD card image**: All Pi's use identical images - master is determined by USB presence
+- **Automatic failover**: Move USB to a different Pi to change which one is master
+- **Time synchronization**: NTP ensures all devices have synchronized clocks
+
+## Self-Hosted Block Diagram
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                              PoE Switch                                     │
+│              (Powers all Pi devices via single Ethernet cable)              │
+└────┬─────────────────┬─────────────────┬─────────────────┬──────────────────┘
+     │                 │                 │                 │
+     │ PoE+Data        │ PoE+Data        │ PoE+Data        │ (to car 12V)
+     ▼                 ▼                 ▼                 │
+┌─────────┐       ┌─────────┐       ┌─────────┐            │
+│ Pi4     │       │ Pi4     │       │ Pi4     │     ┌──────┴──────┐
+│ +PoE HAT│       │ +PoE HAT│       │ +PoE HAT│     │ 12V→48V     │
+│ ┌─────┐ │       │         │       │         │     │ Boost Conv  │
+│ │ USB │ │       │  Kodi   │       │  Kodi   │     └─────────────┘
+│ │Media│ │       │ Client  │       │ Client  │
+│ └─────┘ │       │         │       │         │
+│ MASTER  │       │  SLAVE  │       │  SLAVE  │
+└─────────┘       └─────────┘       └─────────┘
+```
+
+## Bill-Of-Material Changes (Self-Hosted)
+
+Remove these items:
+| Item | Savings |
+|------|---------|
+| GL.iNet GL-MT300N-V2 router | -30€ |
+| 5v PoE Splitter (MicroUSB) for router | -10€ |
+
+Add these items:
+| Item | Qty | Unit Price | Total | Link |
+|------|-----|------------|-------|------|
+| PoE HAT for Raspberry Pi 4 | 3 | ~20€ | 60€ | [Link](https://amzn.eu/d/example) |
+
+**Net change**: +20€ but simpler wiring (single cable per Pi instead of separate power + ethernet)
+
+## Setup for Self-Hosted Mode
+
+1. Flash the same pre-built image to all SD cards
+2. Run additional setup on each Pi:
+   ```bash
+   cd /home/pi/media-mux
+   sudo ./setup-selfhosted.sh
+   ```
+3. Attach USB storage to whichever Pi should be the master
+4. Boot all Pi's - they auto-configure based on USB presence
+
+For full details, see [Mode B: Self-Hosted](https://github.com/hackboxguy/media-mux#mode-b-self-hosted-no-external-router) in the main README.
