@@ -24,7 +24,7 @@ When on a lengthy drive with young children, Its nice to have a setup to keep al
 | 3     | 5v PoE Splitter(MicroUSB)    | 1        | 10            | 10       | 5V/2.4A Micro USB Plug          | [Link](https://amzn.eu/d/7zvdOZI) |
 | 4     | GL.iNet GL-MT300N-V2 router  | 1        | 30            | 30       | None                            | [Link](https://amzn.eu/d/1pgoR1M) |
 | 5     | 12v Car Plug extension       | 1        | 7             | 7        | with DC 5.5mm connector         | [Link](https://amzn.eu/d/8JvOOct) |
-| 6     | 3Key USB keyboard            | 1        | 25            | 25       | For sync trigger                | [Link](https://amzn.eu/d/1t1PTpO) |
+| 6     | 3Key USB keyboard            | 1        | 25            | 25       | Optional (touch OSD available)  | [Link](https://amzn.eu/d/1t1PTpO) |
 | 7     | Aux Audio Jack Cable 3.5 mm  | 1        | 6             | 6        | Display-to-Car-Audio feeder     | [Link](https://amzn.eu/d/dHI4taW) |
 | 8     | USB Flash drive              | 1        | 10            | 10       | Capacity as per your media size | [Link](https://amzn.eu/d/4NsNqtn) |
 | 9     | Raspberry Pi-4               | 3        | 50            | 150      | Minimum 2GB Ram                 | [Link](https://amzn.eu/d/emsVxcN) |
@@ -52,7 +52,7 @@ There are two ways to prepare the SD cards:
 
 The easiest way - download and flash the same image to all SD cards.
 
-**Download**: [media-mux-v1.0.0 Pi4 Image](https://github.com/hackboxguy/media-mux/releases/download/v1.0.0/2024-10-22-raspios-bookworm-arm64-lite-media-mux-v1-0.img.xz) (~1.2GB)
+**Download**: [media-mux-v2.1.0 Pi4 Image](https://github.com/hackboxguy/media-mux/releases/download/v2.1.0/2024-10-22-raspios-bookworm-arm64-lite-media-mux-v2-1.img.xz) (~1.2GB)
 
 1. Download the image file above
 2. Flash to each SD card using [balenaEtcher](https://etcher.balena.io/) or [Rufus](https://rufus.ie/)
@@ -100,8 +100,29 @@ Overwrite OEM firmware of pocket router with [this](https://github.com/hackboxgu
 
 # How to Trigger Sync
 
-6. The Raspi that is attached with the **3-Key USB keyboard** becomes the sync trigger device. Press **KEY_1** to synchronize all screens to play the same media at the same position.
-7. You are free to operate all 3 Raspi-Touch-Screens and play separate medias so that every passenger can enjoy their own content by attaching an audio-headset to their respective screens.
+There are multiple ways to trigger synchronization:
+
+### Option 1: Touch Screen OSD Buttons (Recommended)
+
+1. Start playing a video on the **master device** (the one with USB storage)
+2. Tap the screen to show the OSD (On-Screen Display)
+3. Look for the **Sync** and **Stop All** buttons at the right end of the button bar:
+   - **Sync** - Synchronizes playback position across all screens
+   - **Stop All** - Stops playback on all screens
+
+> **Note:** These buttons only appear on the master device. Slave devices won't see them.
+
+### Option 2: USB Keyboard
+
+The Raspi that is attached with the **3-Key USB keyboard** becomes the sync trigger device. Press **KEY_1** to synchronize all screens to play the same media at the same position.
+
+### Option 3: Keyboard Shortcut
+
+During video playback on the master device, press **'S'** key to trigger sync immediately.
+
+---
+
+You are free to operate all 3 Raspi-Touch-Screens and play separate medias so that every passenger can enjoy their own content by attaching an audio-headset to their respective screens.
 
 # Final Assembly
 ![Final Assembly 1.](/images/assembled-setup-1.jpg "Final Assembly 1.")
@@ -139,6 +160,8 @@ An alternative deployment eliminates the GL-MT300N-V2 pocket router entirely. On
 - **Same SD card image**: All Pi's use identical images - master is determined by USB presence
 - **Automatic failover**: Move USB to a different Pi to change which one is master
 - **Time synchronization**: NTP ensures all devices have synchronized clocks
+- **Touch-friendly OSD**: Sync/Stop buttons in Kodi player (master only)
+- **No startup prompts**: Pre-configured addon database eliminates confirmation dialogs
 
 ## Self-Hosted Block Diagram
 
@@ -178,13 +201,28 @@ Add these items:
 
 ## Setup for Self-Hosted Mode
 
-1. Flash the same pre-built image to all SD cards
-2. Run additional setup on each Pi:
-   ```bash
-   cd /home/pi/media-mux
-   sudo ./setup-selfhosted.sh
-   ```
-3. Attach USB storage to whichever Pi should be the master
-4. Boot all Pi's - they auto-configure based on USB presence
+### Using Pre-built Image v2.1.0 (Recommended)
+
+1. Flash the [media-mux-v2.1.0 image](https://github.com/hackboxguy/media-mux/releases/download/v2.1.0/2024-10-22-raspios-bookworm-arm64-lite-media-mux-v2-1.img.xz) to all SD cards
+2. Attach USB storage (with media files) to whichever Pi should be the master
+3. Boot all Pi's - they auto-configure based on USB presence
+
+The v2.1.0 image includes:
+- Kodi addon with touch-friendly Sync/Stop OSD buttons
+- Pre-configured addon database (no startup prompts)
+- All self-hosted networking services (DHCP, DNS, NTP, DLNA)
+
+### Manual Setup (on existing installation)
+
+If you have an older image, run on each Pi:
+```bash
+# Step 1: Base installation (will reboot after completion)
+cd /home/pi/media-mux
+sudo ./setup.sh -n 1
+
+# Step 2: After reboot, login again and run self-hosted setup
+cd /home/pi/media-mux
+sudo ./setup-selfhosted.sh
+```
 
 For full details, see [Mode B: Self-Hosted](https://github.com/hackboxguy/media-mux#mode-b-self-hosted-no-external-router) in the main README.
