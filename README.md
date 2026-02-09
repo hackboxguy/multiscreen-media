@@ -110,6 +110,8 @@ There are multiple ways to trigger synchronization:
    - **Sync** - Synchronizes playback position across all screens
    - **Stop All** - Stops playback on all screens
 
+![OSD Sync/Stop Buttons](/images/osd-screen-media-mux-custom-buttons.png "Kodi OSD with Media-Mux Sync and Stop buttons")
+
 > **Note:** These buttons only appear on the master device. Slave devices won't see them.
 
 ### Option 2: USB Keyboard
